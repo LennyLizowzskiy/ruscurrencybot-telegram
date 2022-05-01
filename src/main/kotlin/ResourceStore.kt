@@ -3,7 +3,7 @@ import kotlin.js.json
 object ResourceStore {
     val sensitiveInformation = json(
         "authorization" to json(
-            "telegram_bot_api_key" to (process.env.TELEGRAM_BOT_API_KEY ?: throw IllegalArgumentException("TELEGRAM_BOT_API_KEY wasn't found in ENV"))
+            "telegram_bot_api_key" to process.env.TELEGRAM_BOT_API_KEY
         )
     )
 
