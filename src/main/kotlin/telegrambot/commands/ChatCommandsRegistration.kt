@@ -1,6 +1,5 @@
 package telegrambot.commands
 
-import CurrencyUpdater
 import converters.MOEX
 import converters.QIWI
 import javascript.Timestamper
