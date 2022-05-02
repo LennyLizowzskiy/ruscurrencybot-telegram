@@ -38,10 +38,10 @@ fun registerChatCommands(): Unit = with(ChatCommand) {
                     Pair("closedWarning", "\n" + MessageSchema.findByName("moex_closed_warning").toString() + "\n")
                 else
                     Pair("closedWarning", ""),
-                Pair("kztBSell", qiwiKZT.second.buyingFor),     Pair("kztBBuy", qiwiKZT.second.sellingFor),
-                Pair("usdBSell", qiwiUSD.second.buyingFor),     Pair("usdBBuy", qiwiKZT.second.sellingFor),
-                Pair("eurBSell", qiwiEUR.second.buyingFor),     Pair("eurBBuy", qiwiEUR.second.sellingFor),
-                Pair("cnyBSell", qiwiCNY.second.buyingFor),     Pair("cnyBBuy", qiwiCNY.second.sellingFor),
+                Pair("kztBSell", qiwiKZT.second.sellingFor),     Pair("kztBBuy", qiwiKZT.second.buyingFor),
+                Pair("usdBSell", qiwiUSD.second.sellingFor),     Pair("usdBBuy", qiwiUSD.second.buyingFor),
+                Pair("eurBSell", qiwiEUR.second.sellingFor),     Pair("eurBBuy", qiwiEUR.second.buyingFor),
+                Pair("cnyBSell", qiwiCNY.second.sellingFor),     Pair("cnyBBuy", qiwiCNY.second.buyingFor),
                 Pair("time", Timestamper.getPrettyPrintedCurrentTime())
             )
         }
