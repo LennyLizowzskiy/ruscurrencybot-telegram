@@ -24,8 +24,8 @@ object MOEX : ExchangeCurrencyConverter() {
     override fun convertToRubles(from: Currency, amount: Float, transactionType: ConvertType?)
         = with(getCurrencyByCharCode(from.charCode)) { amount / this.first.nominal * this.second.sellingFor }
 
-    fun isClosedNow(): Boolean = with(Date(Date.now() + 3600 * 1000 * 3)) {
-        return this.getHours() > 18 || this.getHours() < 10
+    fun isClosedNow(): Boolean = with(Date(Date.now() + 3600 * 1000 * 3)) date@{
+        return this@date.getHours() > 17 || this@date.getHours() < 10
     }
 
     override fun updateCurrencyRates(): dynamic {

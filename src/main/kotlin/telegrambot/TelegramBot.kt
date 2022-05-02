@@ -59,12 +59,12 @@ fun listenInlineQueries() {
             it.context.matched = matched!!
 
             var resultArray: Array<Json> = emptyArray()
-            it.answer.results.forEach {
+            it.answer.results.forEach { result ->
                 resultArray += json(
-                    "type" to it.type,
-                    "id" to it.id
+                    "type" to result.type,
+                    "id" to result.id
                 ).apply {
-                    it.additions.forEach { addition ->
+                    result.additions.forEach { addition ->
                         if (addition.value is Map<*, *>) {
                             json().let { json ->
                                 (addition.value as Map<*, *>).forEach {additionOfAddition ->

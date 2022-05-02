@@ -20,7 +20,7 @@ sealed class CurrencyConverter {
      * @return [Float]
      */
     abstract fun convertRublesTo(to: Currency, amount: Float, transactionType: ConvertType?): Float
-    // TODO: Учитывать данные о базовом номининале валюты (делить цену продажи/покупки на номинал)
+
     /**
      * Конвертирует указанную валюту в рубли
      *
