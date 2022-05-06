@@ -1,10 +1,13 @@
 package telegrambot.commands
 
+import CurrencyUpdater.lastUpdateTime
 import converters.MOEX
 import converters.QIWI
 import javascript.Timestamper
-import models.telegrambot.messages.commands.InlineRequest
-import models.telegrambot.messages.schemas.MessageSchema
+import models.telegrambot.messaging.commands.InlineRequest
+import models.telegrambot.messaging.inlineresults.InlineQueryResultArticle
+import models.telegrambot.messaging.inlineresults.inputmessagecontents.InputTextMessageContent
+import models.telegrambot.messaging.schemas.MessageSchema
 
 fun registerInlineRequests(): Unit = with(InlineRequest) {
     register("default", arrayOf(
@@ -18,39 +21,37 @@ fun registerInlineRequests(): Unit = with(InlineRequest) {
 
             context.schemaFillers = arrayOf(
                 arrayOf(
-                    Pair("converterExName", MOEX.shortName),
-                    Pair("kztM", MOEX.getCurrencyByCharCode("KZT").second.sellingFor),
-                    Pair("usdM", MOEX.getCurrencyByCharCode("USD").second.sellingFor),
-                    Pair("eurM", MOEX.getCurrencyByCharCode("EUR").second.sellingFor),
-                    Pair("cnyM", MOEX.getCurrencyByCharCode("CNY").second.sellingFor),
+                    "converterExName" to MOEX.shortName,
+                    "kztM" to MOEX.getCurrencyByCharCode("KZT").second.sellingFor,
+                    "usdM" to MOEX.getCurrencyByCharCode("USD").second.sellingFor,
+                    "eurM" to MOEX.getCurrencyByCharCode("EUR").second.sellingFor,
+                    "cnyM" to MOEX.getCurrencyByCharCode("CNY").second.sellingFor,
 
-                    Pair("converterBankName", QIWI.shortName),
+                    "converterBankName" to QIWI.shortName,
                     if (MOEX.isClosedNow())
-                        Pair("closedWarning", "\n" + MessageSchema.findByName("moex_closed_warning").toString() + "\n")
+                        "closedWarning" to "\n" + MessageSchema.findByName("moex_closed_warning").toString() + "\n"
                     else
-                        Pair("closedWarning", ""),
-                    Pair("kztBSell", qiwiKZT.second.sellingFor),     Pair("kztBBuy", qiwiKZT.second.buyingFor),
-                    Pair("usdBSell", qiwiUSD.second.sellingFor),     Pair("usdBBuy", qiwiUSD.second.buyingFor),
-                    Pair("eurBSell", qiwiEUR.second.sellingFor),     Pair("eurBBuy", qiwiEUR.second.buyingFor),
-                    Pair("cnyBSell", qiwiCNY.second.sellingFor),     Pair("cnyBBuy", qiwiCNY.second.buyingFor),
+                        "closedWarning" to "",
+                    "kztBSell" to qiwiKZT.second.sellingFor, "kztBBuy" to qiwiKZT.second.buyingFor,
+                    "usdBSell" to qiwiUSD.second.sellingFor, "usdBBuy" to qiwiUSD.second.buyingFor,
+                    "eurBSell" to qiwiEUR.second.sellingFor, "eurBBuy" to qiwiEUR.second.buyingFor,
+                    "cnyBSell" to qiwiCNY.second.sellingFor, "cnyBBuy" to qiwiCNY.second.buyingFor,
 
-                    Pair("time", Timestamper.getPrettyPrintedCurrentTime())
+                    "time" to Timestamper.getPrettyPrintedTime(lastUpdateTime)
                 )
             )
         }
 
         answer {
-            addQueryResult {
-                type = "article"
-                additions = mapOf(
-                    "title" to "Отправить текущий курс валют в чат",
-                    "description" to "Источники: Мосбиржа, QIWI",
-                    "input_message_content" to mapOf<String, Any>(
-                        "message_text" to MessageSchema.findByName("current_exchange_rates")!!.applyParameters(*context.schemaFillers[0]),
-                        "parse_mode" to "HTML"
+            addQueryResult(
+                InlineQueryResultArticle(
+                    title = "Отправить текущий курс валют в чат",
+                    description = "Источники: Мосбиржа, QIWI",
+                    input_message_content = InputTextMessageContent(
+                        message_text = MessageSchema.findByName("current_exchange_rates")!!.applyParameters(*context.schemaFillers[0])
                     )
                 )
-            }
+            )
         }
     }
 }

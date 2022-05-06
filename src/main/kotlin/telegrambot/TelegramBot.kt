@@ -1,26 +1,26 @@
-@file:Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
-
 package telegrambot
 
 import ResourceStore
-import TelegramBot
-import models.telegrambot.messages.commands.ChatCommand
-import models.telegrambot.messages.commands.InlineRequest
-import models.telegrambot.messages.response.InlineQuery
-import kotlin.js.Json
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.json.encodeToDynamic
+import models.telegrambot.messaging.commands.ChatCommand
+import models.telegrambot.messaging.commands.InlineRequest
+import models.telegrambot.messaging.response.InlineQuery
 import kotlin.js.RegExp
 import kotlin.js.json
+import TelegramBot as TelegramBotClass
+import kotlinx.serialization.json.Json as JsonS
 
-lateinit var TelegramBot: TelegramBot
+lateinit var TelegramBot: TelegramBotClass
 fun setupTelegramBot() {
-    TelegramBot = TelegramBot(
+    TelegramBot = TelegramBotClass(
         ResourceStore.sensitiveInformation["authorization"].asDynamic()["telegram_bot_api_key"]!! as String,
         json(
             "polling" to true
         )
     )
 
-    TelegramBot.on("polling_error") { err, _ -> console.log(err) }
+    //TelegramBot.on("polling_error") { err, _ -> console.log(err) }
 }
 
 fun listenChatCommands() {
@@ -30,7 +30,7 @@ fun listenChatCommands() {
         command.context.message = message
 
         val options = json(
-            "parse_mode" to "HTML",
+            "parse_mode" to ResourceStore.telegramBotDefaults["parse_mode"] as String,
             "disable_web_page_preview" to true,
             "disable_notification" to true,
             "allow_sending_without_reply" to command.reply.options.allowSendingWithoutReply
@@ -41,43 +41,32 @@ fun listenChatCommands() {
     }
 }
 
+@OptIn(ExperimentalSerializationApi::class)
 fun listenInlineQueries() {
     TelegramBot.on("inline_query") start@{ query, _ ->
         var answer: InlineRequest? = null
         var matched: MatchResult? = null
-        InlineRequest.storage.forEach {
+        InlineRequest.storage.forEach { entry ->
             if(matched != null) return@forEach // break для бедных лол
 
-            val regex = it.value.regexes.find { it.matches(query.query.toString()) }
-            if (regex != null) {
-                matched = regex.find(query.query.toString())
-                answer = it.value
+            entry.value.regexes.find { it.matches(query.query.toString()) }?.let {
+                matched = it.find(query.query.toString())
+                answer = entry.value
             }
         }
-        answer!!.let {
-            it.context.query = query.query as InlineQuery
-            it.context.matched = matched!!
+        answer!!.let { request ->
+            request.context.query = query.query.unsafeCast<InlineQuery>()
+            request.context.matched = matched!!
 
-            var resultArray: Array<Json> = emptyArray()
-            it.answer.results.forEach { result ->
-                resultArray += json(
-                    "type" to result.type,
-                    "id" to result.id
-                ).apply {
-                    result.additions.forEach { addition ->
-                        if (addition.value is Map<*, *>) {
-                            json().let { json ->
-                                (addition.value as Map<*, *>).forEach {additionOfAddition ->
-                                    json.set(additionOfAddition.key as String, additionOfAddition.value.asDynamic())
-                                }
-                                set(addition.key, json)
-                            }
-                        } else set(addition.key, addition.value)
-                    }
-                }
+            val resultArray: ArrayList<dynamic> = arrayListOf()
+            val jsoner = JsonS {
+                classDiscriminator = "_type"
+                encodeDefaults = true
+                explicitNulls = false
             }
+            request.answer.results.forEach { resultArray.add(jsoner.encodeToDynamic(it)) }
 
-            TelegramBot.asDynamic().answerInlineQuery(query.id, resultArray)
+            TelegramBot.asDynamic().answerInlineQuery(query.id, resultArray.toTypedArray())
         }
     }
 }

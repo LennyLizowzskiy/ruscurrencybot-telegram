@@ -1,6 +1,6 @@
 package telegrambot.messages.schemas
 
-import models.telegrambot.messages.schemas.MessageSchema
+import models.telegrambot.messaging.schemas.MessageSchema
 
 fun registerMessageSchemas(): Unit = with(MessageSchema) {
     register(

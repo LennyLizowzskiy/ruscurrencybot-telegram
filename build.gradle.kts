@@ -1,5 +1,6 @@
 plugins {
     kotlin("js") version "1.6.21"
+    kotlin("plugin.serialization") version "1.6.21"
 }
 
 group = "ru.lizowzskiy"
@@ -16,6 +17,9 @@ dependencies {
     implementation(npm("node-telegram-bot-api", "0.57.0"))
     implementation(npm("xml-js", "1.6.11"))
     implementation(npm("puppeteer", "13.7.0"))
+
+    // Serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
 
     // Test
     testImplementation(kotlin("test"))

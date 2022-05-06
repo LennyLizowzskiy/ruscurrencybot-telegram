@@ -1,7 +1,4 @@
-import annotations.javascript.JsFunction
-import annotations.javascript.JsObject
-import annotations.javascript.JsParameters
-import models.telegrambot.messages.response.Message
+import models.telegrambot.messaging.response.Message
 import kotlin.js.Json
 import kotlin.js.RegExp
 import kotlin.js.RegExpMatch
@@ -15,14 +12,11 @@ import kotlin.js.json
  * @param[moduleOrPath] Путь к файлу или название NPM-пакета
  * @return Запрошенное [Any] или пишет ошибку в терминал
  */
-@JsFunction
-@JsParameters("moduleOrPath")
 external fun require(moduleOrPath: String): dynamic
 
 /**
  * Объект [process](https://nodejs.org/dist/latest-v8.x/docs/api/process.html) из Node.JS
  */
-@JsObject
 external val process: dynamic
 
 /**
@@ -30,8 +24,6 @@ external val process: dynamic
  *
  * [Открыть на NPMJS](https://www.npmjs.com/package/needle)
  */
-@JsFunction
-@JsParameters("method", "url", "settings?")
 val needle = require("needle")
 
 /**
@@ -39,7 +31,6 @@ val needle = require("needle")
  *
  * [Открыть на NPMJS](https://www.npmjs.com/package/xml-js)
  */
-@JsObject
 val xmlConverter = require("xml-js")
 
 /**
@@ -47,8 +38,6 @@ val xmlConverter = require("xml-js")
  *
  * [Открыть на NPMJS](https://www.npmjs.com/package/moment)
  */
-@JsFunction
-@JsParameters("date?", "isStrict?")
 val moment = require("moment")
 
 /**
@@ -56,7 +45,6 @@ val moment = require("moment")
  *
  * [Открыть на NPMJS](https://www.npmjs.com/package/puppeteer)
  */
-@JsObject
 val puppeteer = require("puppeteer")
 
 /**
@@ -64,8 +52,15 @@ val puppeteer = require("puppeteer")
  *
  * @see puppeteer
  */
-@JsObject
-val pseudoBrowser = puppeteer.launch()
+val pseudoBrowser = puppeteer.launch(json(
+    /**
+     * Позволит запустить бота от имени root в окружении Linux,
+     * но также является большой дырой в безопасности
+     *
+     * Использовать на свой страх и риск
+     */
+    // "args" to arrayOf("--no-sandbox")
+))
 
 /**
  * Обёртка для [Telegram Bot API](https://core.telegram.org/bots/api).
@@ -95,7 +90,7 @@ external class TelegramBot(botApiKey: String, options: Json?) {
     fun sendMessage(chat_id: dynamic, text: String, options: Json?)
 
     /**
-     * Отвечает на [models.telegrambot.messages.commands.InlineRequest]
+     * Отвечает на [models.telegrambot.messaging.commands.InlineRequest]
      *
      * [Доступные поля в options](https://core.telegram.org/bots/api#answerinlinequery)
      */
