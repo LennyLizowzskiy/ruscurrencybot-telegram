@@ -77,12 +77,34 @@ sealed class CurrencyConverter {
 /**
  * Биржевой конвертер валют
  */
-abstract class ExchangeCurrencyConverter: CurrencyConverter()
+abstract class ExchangeCurrencyConverter: CurrencyConverter() {
+    override fun convertRublesTo(to: Currency, amount: Float, transactionType: ConvertType?)
+        = with(getCurrencyByCharCode(to.charCode)) { amount / this.second.sellingFor * this.first.nominal }
+
+    override fun convertToRubles(from: Currency, amount: Float, transactionType: ConvertType?)
+        = with(getCurrencyByCharCode(from.charCode)) { amount / this.first.nominal * this.second.sellingFor }
+}
 
 /**
  * Банковский конвертер валют (со спредом продажа-покупка)
  */
-abstract class BankCurrencyConverter: CurrencyConverter()
+abstract class BankCurrencyConverter: CurrencyConverter() {
+    override fun convertRublesTo(to: Currency, amount: Float, transactionType: ConvertType?): Float
+        = with(getCurrencyByCharCode(to.charCode)) {
+            return when(transactionType) {
+                ConvertType.SELLING -> amount / this.second.sellingFor
+                ConvertType.BUYING, null -> amount / this.second.buyingFor
+            } * this.first.nominal
+        }
+
+    override fun convertToRubles(from: Currency, amount: Float, transactionType: ConvertType?): Float
+        = with(getCurrencyByCharCode(from.charCode)){
+            return when (transactionType) {
+                ConvertType.SELLING -> amount / this.first.nominal * this.second.sellingFor
+                ConvertType.BUYING, null -> amount / this.first.nominal * this.second.buyingFor
+            }
+        }
+}
 
 enum class ConvertType {
     SELLING, BUYING

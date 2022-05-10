@@ -27,12 +27,6 @@ object MOEX : ExchangeCurrencyConverter() {
               "00", "01", "02", "03", "04", "05", "06", "07", "08", "09")
     }
 
-    override fun convertRublesTo(to: Currency, amount: Float, transactionType: ConvertType?)
-        = with(getCurrencyByCharCode(to.charCode)) { amount / this.second.sellingFor * this.first.nominal }
-
-    override fun convertToRubles(from: Currency, amount: Float, transactionType: ConvertType?)
-        = with(getCurrencyByCharCode(from.charCode)) { amount / this.first.nominal * this.second.sellingFor }
-
     override var updateInterval: Long = 3600000
 
     fun isClosedNow(): Boolean = with(Date(Date.now() + 3600 * 1000 * 3)) date@{

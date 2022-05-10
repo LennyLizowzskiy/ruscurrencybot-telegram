@@ -30,22 +30,6 @@ object QIWI : BankCurrencyConverter() {
         }
     }
 
-    override fun convertRublesTo(to: Currency, amount: Float, transactionType: ConvertType?): Float
-        = with(getCurrencyByCharCode(to.charCode)) {
-            return when(transactionType) {
-                ConvertType.SELLING -> amount / this.second.sellingFor
-                ConvertType.BUYING, null -> amount / this.second.buyingFor
-            } * this.first.nominal
-        }
-
-    override fun convertToRubles(from: Currency, amount: Float, transactionType: ConvertType?): Float
-        = with(getCurrencyByCharCode(from.charCode)){
-            return when (transactionType) {
-                ConvertType.SELLING -> amount / this.first.nominal * this.second.sellingFor
-                ConvertType.BUYING, null -> amount / this.first.nominal * this.second.buyingFor
-            }
-        }
-
     override var updateInterval: Long = 3600000
 
     @OptIn(DelicateCoroutinesApi::class)
