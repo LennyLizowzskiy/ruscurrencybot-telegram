@@ -1,5 +1,6 @@
 package telegrambot.commands
 
+import converters.AliExpress
 import converters.MOEX
 import converters.QIWI
 import javascript.Timestamper
@@ -26,6 +27,9 @@ fun registerInlineRequests(): Unit = with(InlineRequest) {
                     "eurM" to MOEX.getCurrencyByCharCode("EUR").second.sellingFor,
                     "cnyM" to MOEX.getCurrencyByCharCode("CNY").second.sellingFor,
 
+                    "converterAliName" to AliExpress.name, "aliLastUpdateTimestamp" to Timestamper.getPrettyPrintedTime(AliExpress.lastUpdateTime),
+                    "usdA" to AliExpress.getCurrencyByCharCode("USD").second.sellingFor,
+
                     "converterBankName" to QIWI.shortName, "bankLastUpdateTimestamp" to Timestamper.getPrettyPrintedTime(QIWI.lastUpdateTime),
                     if (MOEX.isClosedNow())
                         "closedWarning" to "\n" + MessageSchema.findByName("moex_closed_warning").toString() + "\n"
@@ -43,7 +47,7 @@ fun registerInlineRequests(): Unit = with(InlineRequest) {
             addQueryResult(
                 InlineQueryResultArticle(
                     title = "Отправить текущий курс валют в чат",
-                    description = "Источники: Мосбиржа, QIWI",
+                    description = "Источники: Мосбиржа, AliExpress, QIWI",
                     input_message_content = InputTextMessageContent(
                         message_text = MessageSchema.findByName("current_exchange_rates")!!.applyParameters(*context.schemaFillers[0])
                     )

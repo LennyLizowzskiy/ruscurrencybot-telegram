@@ -8,6 +8,9 @@ fun registerMessageSchemas(): Unit = with(MessageSchema) {
         """
         <b>Текущий курс обмена валют</b>
         
+        <b>%converterAliName от %aliLastUpdateTimestamp</b>
+        🇺🇸 1 USD за %usdA RUB
+        
         <b>%converterExName от %exLastUpdateTimestamp:</b>
         🇰🇿 100 KZT за %kztM RUB
         🇺🇸 1 USD за %usdM RUB

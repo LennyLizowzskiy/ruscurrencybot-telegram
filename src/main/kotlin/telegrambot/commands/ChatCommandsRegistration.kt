@@ -1,5 +1,6 @@
 package telegrambot.commands
 
+import converters.AliExpress
 import converters.MOEX
 import converters.QIWI
 import javascript.Timestamper
@@ -32,6 +33,9 @@ fun registerChatCommands(): Unit = with(ChatCommand) {
                 "usdM" to MOEX.getCurrencyByCharCode("USD").second.sellingFor,
                 "eurM" to MOEX.getCurrencyByCharCode("EUR").second.sellingFor,
                 "cnyM" to MOEX.getCurrencyByCharCode("CNY").second.sellingFor,
+
+                "converterAliName" to AliExpress.name, "aliLastUpdateTimestamp" to Timestamper.getPrettyPrintedTime(AliExpress.lastUpdateTime),
+                "usdA" to AliExpress.getCurrencyByCharCode("USD").second.sellingFor,
 
                 "converterBankName" to QIWI.shortName, "bankLastUpdateTimestamp" to Timestamper.getPrettyPrintedTime(QIWI.lastUpdateTime),
                 if (MOEX.isClosedNow())

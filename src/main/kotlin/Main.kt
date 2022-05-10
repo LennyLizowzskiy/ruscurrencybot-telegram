@@ -1,5 +1,4 @@
-import converters.MOEX
-import converters.QIWI
+import converters.*
 import javascript.Chromium
 import javascript.dependencies.applyJsDependenciesSettings
 import kotlinx.coroutines.await
@@ -18,6 +17,7 @@ suspend fun main() {
 
     MOEX.startAutoUpdater()
     QIWI.startAutoUpdater()
+    AliExpress.startAutoUpdater()
 
     // Даже после переписывания на корутины всё ещё на задержках
     // для await вместо этого нужен костыль, который не считаю нормальным
