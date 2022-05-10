@@ -1,6 +1,6 @@
 package javascript
 
-import moment
+import javascript.dependencies.moment
 import kotlin.js.Date
 
 object Timestamper {
@@ -8,7 +8,7 @@ object Timestamper {
 
     fun format(input: dynamic, format: String): dynamic = moment(input).format(format)
 
-    fun getPrettyPrintedTime(input: dynamic): String = format(input, "HH:mm DD/MM/YYYY") as String
+    fun getPrettyPrintedTime(input: dynamic): String = format(input, "HH:mm DD/MM/YYYY").unsafeCast<String>()
     fun getPrettyPrintedCurrentTime(): String = getPrettyPrintedTime(currentTime())
 }
 

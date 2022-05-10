@@ -8,7 +8,7 @@ import models.telegrambot.messaging.commands.InlineRequest
 import models.telegrambot.messaging.response.InlineQuery
 import kotlin.js.RegExp
 import kotlin.js.json
-import TelegramBot as TelegramBotClass
+import javascript.dependencies.TelegramBot as TelegramBotClass
 import kotlinx.serialization.json.Json as JsonS
 
 lateinit var TelegramBot: TelegramBotClass
@@ -41,13 +41,14 @@ fun listenChatCommands() {
     }
 }
 
+
 @OptIn(ExperimentalSerializationApi::class)
 fun listenInlineQueries() {
     TelegramBot.on("inline_query") start@{ query, _ ->
         var answer: InlineRequest? = null
         var matched: MatchResult? = null
-        InlineRequest.storage.forEach { entry ->
-            if(matched != null) return@forEach // break для бедных лол
+        for (entry in InlineRequest.storage) {
+            if(matched != null) break
 
             entry.value.regexes.find { it.matches(query.query.toString()) }?.let {
                 matched = it.find(query.query.toString())

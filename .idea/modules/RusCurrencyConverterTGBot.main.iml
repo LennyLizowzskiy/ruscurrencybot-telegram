@@ -6,7 +6,7 @@
         <newMppModelJpsModuleKind>COMPILATION_AND_SOURCE_SET_HOLDER</newMppModelJpsModuleKind>
         <productionOutputPath>$MODULE_DIR$/../../build/classes/kotlin/main</productionOutputPath>
         <compilerSettings>
-          <option name="additionalArguments" value="-Xir-module-name=ru.lizowzskiy:RusCurrencyConverterTGBot -Xir-only -Xir-per-module-output-name=RusCurrencyConverterTGBot -Xir-produce-klib-dir" />
+          <option name="additionalArguments" value="-Xir-module-name=ru.lizowzskiy:RusCurrencyConverterTGBot -Xir-only -Xir-per-module-output-name=RusCurrencyConverterTGBot -Xir-produce-klib-dir -opt-in kotlin.RequiresOptIn" />
         </compilerSettings>
         <compilerArguments>
           <flagArguments>

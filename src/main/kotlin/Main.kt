@@ -1,3 +1,9 @@
+import converters.MOEX
+import converters.QIWI
+import javascript.Chromium
+import javascript.dependencies.applyJsDependenciesSettings
+import kotlinx.coroutines.await
+import kotlinx.coroutines.delay
 import telegrambot.commands.registerChatCommands
 import telegrambot.commands.registerInlineRequests
 import telegrambot.listenChatCommands
@@ -5,24 +11,26 @@ import telegrambot.listenInlineQueries
 import telegrambot.messages.schemas.registerMessageSchemas
 import telegrambot.setupTelegramBot
 
-fun main() {
+suspend fun main() {
     applyJsDependenciesSettings()
 
-    CurrencyUpdater.start()
+    Chromium.initiate().await()
 
-    // Тут мне было лень реализовывать адекватное решение для ожидания загрузки курсов
-    // Если переписать всё на внешние интерфейсы (в т.ч. на Promise<T>) вместо [dynamic],
-    // то можно будет без костылей просто поставить then или вообще в suspend fun пихнуть
-    setTimeout({
-        registerMessageSchemas()
+    MOEX.startAutoUpdater()
+    QIWI.startAutoUpdater()
 
-        registerChatCommands()
-        registerInlineRequests()
+    // Даже после переписывания на корутины всё ещё на задержках
+    // для await вместо этого нужен костыль, который не считаю нормальным
+    delay(7000)
 
-        setupTelegramBot()
-        listenChatCommands()
-        listenInlineQueries()
+    registerMessageSchemas()
 
-        console.log("Listening...")
-    }, 10000)
+    registerChatCommands()
+    registerInlineRequests()
+
+    setupTelegramBot()
+    listenChatCommands()
+    listenInlineQueries()
+
+    console.log("Listening...")
 }

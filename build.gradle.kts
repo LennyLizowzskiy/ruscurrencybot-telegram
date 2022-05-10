@@ -21,6 +21,10 @@ dependencies {
     // Serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
 
+    // Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.6.1")
+
     // Test
     testImplementation(kotlin("test"))
 }
@@ -32,5 +36,9 @@ kotlin {
 
         }
         binaries.executable()
+    }
+
+    sourceSets.all {
+        languageSettings.optIn("kotlin.RequiresOptIn")
     }
 }

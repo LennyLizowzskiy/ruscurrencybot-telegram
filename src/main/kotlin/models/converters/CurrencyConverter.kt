@@ -1,5 +1,15 @@
 package models.converters
 
+import javascript.Timestamper
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.await
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.promise
+import kotlin.js.Date
+import kotlin.js.Promise
+
 sealed class CurrencyConverter {
     abstract val name: String
     abstract val shortName: String
@@ -9,7 +19,10 @@ sealed class CurrencyConverter {
 
     val latestRequestedData: MutableSet<CurrencyFull> = mutableSetOf()
 
-    abstract fun updateCurrencyRates()
+    @OptIn(DelicateCoroutinesApi::class)
+    open suspend fun initiate(): Promise<*> = GlobalScope.promise {}
+
+    abstract suspend fun updateCurrencyRates(): Promise<*>
 
     fun getCurrencyByCharCode(charCode: String)
         = latestRequestedData.find { it.first.charCode == charCode } ?: throw NoSuchElementException("tried to find $charCode in latestRequestedData, not found")
@@ -27,6 +40,38 @@ sealed class CurrencyConverter {
      * @return [Float]
      */
     abstract fun convertToRubles(from: Currency, amount: Float, transactionType: ConvertType?): Float
+
+
+    // Автообновление курсов
+
+    abstract var updateInterval: Long
+
+    var updaterActive = true
+    private var noUpdateHours: Set<String> = emptySet() // пример: "00", "09", "14"
+    var lastUpdateTime: Double = 0.0
+    fun disableUpdatesAt(vararg hours: String) {
+        noUpdateHours = noUpdateHours.plus(hours.asIterable())
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    suspend fun startAutoUpdater() = GlobalScope.launch {
+        initiate().await()
+
+        while (updaterActive) {
+            Date.now().let { ms ->
+                Timestamper.format(ms, "HH").unsafeCast<String>().also { currentHour ->
+                    if (noUpdateHours.any { it == currentHour } && lastUpdateTime != 0.0)
+                        delay(updateInterval)
+                }
+            }
+
+            updateCurrencyRates().await()
+
+            lastUpdateTime = Date.now()
+
+            delay(updateInterval)
+        }
+    }
 }
 
 /**

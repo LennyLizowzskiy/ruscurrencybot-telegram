@@ -1,3 +1,4 @@
+import javascript.stdlib.process
 import kotlin.js.json
 
 object ResourceStore {

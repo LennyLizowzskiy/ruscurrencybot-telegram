@@ -1,6 +1,5 @@
 package models.telegrambot.messaging.commands
 
-import javascript.Timestamper
 import models.telegrambot.messaging.context.ChatContext
 import models.telegrambot.messaging.schemas.MessageSchema
 
@@ -13,17 +12,6 @@ class ChatCommandReply(override val context: ChatContext) : CommandReply(context
     fun applyMessageSchema(schema: MessageSchema) {
         text += schema.applyParameters(*context.schemaFillers)
     }
-
-    /**
-     * Добавляет метку времени в итоговое сообщение
-     *
-     * Используйте паттерн %t, чтобы добавить метку времени в строку
-     */
-    fun addTimestamp(string: String, time: Double) {
-        text += "\n\n" + string.replace("%t", Timestamper.getPrettyPrintedTime(time))
-    }
-
-    fun addCurrentTimestamp() { text += "\n\n" + Timestamper.getPrettyPrintedCurrentTime() }
 
 
     var options = Options()

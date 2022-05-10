@@ -23,7 +23,7 @@ enum class Currency(
     }
 }
 
-class CurrencyRate(val sellingFor: Float, buyingFor: Float?) {
+class CurrencyRate(val sellingFor: Float, buyingFor: Float? = null) {
     private val _buyingFor = buyingFor
     val buyingFor: Float
         get() = _buyingFor ?: sellingFor
