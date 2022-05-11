@@ -1,7 +1,7 @@
-import converters.*
-import javascript.Chromium
+import converters.AliExpress
+import converters.MOEX
+import converters.QIWI
 import javascript.dependencies.applyJsDependenciesSettings
-import kotlinx.coroutines.await
 import kotlinx.coroutines.delay
 import telegrambot.commands.registerChatCommands
 import telegrambot.commands.registerInlineRequests
@@ -13,15 +13,13 @@ import telegrambot.setupTelegramBot
 suspend fun main() {
     applyJsDependenciesSettings()
 
-    Chromium.initiate().await()
-
     MOEX.startAutoUpdater()
     QIWI.startAutoUpdater()
     AliExpress.startAutoUpdater()
 
     // Даже после переписывания на корутины всё ещё на задержках
     // для await вместо этого нужен костыль, который не считаю нормальным
-    delay(7000)
+    delay(5000)
 
     registerMessageSchemas()
 

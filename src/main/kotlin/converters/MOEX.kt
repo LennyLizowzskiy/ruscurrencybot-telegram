@@ -8,7 +8,6 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.await
 import kotlinx.coroutines.promise
-import models.converters.ConvertType
 import models.converters.Currency
 import models.converters.CurrencyRate
 import models.converters.ExchangeCurrencyConverter
@@ -29,7 +28,7 @@ object MOEX : ExchangeCurrencyConverter() {
 
     override var updateInterval: Long = 3600000
 
-    fun isClosedNow(): Boolean = with(Date(Date.now() + 3600 * 1000 * 3)) date@{
+    fun isClosedNow(): Boolean = with(Date(Date.now())) date@{
         return this@date.getHours() > 17 || this@date.getHours() < 10
     }
 

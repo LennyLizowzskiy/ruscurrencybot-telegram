@@ -16,7 +16,6 @@ dependencies {
     implementation(npm("needle", "3.1.0"))
     implementation(npm("node-telegram-bot-api", "0.57.0"))
     implementation(npm("xml-js", "1.6.11"))
-    implementation(npm("puppeteer", "13.7.0"))
 
     // Serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
@@ -24,9 +23,6 @@ dependencies {
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.6.1")
-
-    // Test
-    testImplementation(kotlin("test"))
 }
 
 kotlin {
