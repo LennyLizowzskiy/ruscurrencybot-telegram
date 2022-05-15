@@ -46,6 +46,8 @@ sealed class CurrencyConverter {
 
     abstract var updateInterval: Long
 
+    var isFirstUpdatePredicted = false
+
     var updaterActive = true
     private var noUpdateHours: Set<String> = emptySet() // пример: "00", "09", "14"
     var lastUpdateTime: Double = 0.0
@@ -66,11 +68,21 @@ sealed class CurrencyConverter {
             }
 
             updateCurrencyRates().await()
+            if (!isFirstUpdatePredicted) isFirstUpdatePredicted = true
 
             lastUpdateTime = Date.now()
 
             delay(updateInterval)
         }
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    suspend fun awaitFirstUpdate() = GlobalScope.promise {
+        while (!isFirstUpdatePredicted) {
+            delay(500)
+        }
+
+        return@promise true
     }
 }
 
