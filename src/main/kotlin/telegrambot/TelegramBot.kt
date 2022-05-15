@@ -64,12 +64,12 @@ fun listenInlineQueries() {
         }
         if (answer == null) answer = InlineRequest.storage.getValue("default")
 
+        answer!!.context.matched = matched
         answer!!.executables[Command.Events.BEFORE_REPLY]!!()
 
         val finalAnswer = answer!!.executables[Command.Events.ANSWER]!!() as InlineAnswer // потому что смарт-кастить оно не хочет
 
         finalAnswer.context.query = query.query.unsafeCast<InlineQuery>()
-        finalAnswer.context.matched = matched
 
         val resultArray: ArrayList<dynamic> = arrayListOf()
         val jsoner = JsonS {
