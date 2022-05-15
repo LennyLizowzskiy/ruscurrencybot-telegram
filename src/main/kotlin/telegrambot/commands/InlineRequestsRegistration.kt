@@ -11,7 +11,7 @@ import models.telegrambot.messaging.schemas.MessageSchema
 
 fun registerInlineRequests(): Unit = with(InlineRequest) {
     register("default", arrayOf(
-        Regex(".*")
+        Regex("^Ø")
     )) {
         executeBeforeReply {
             val qiwiKZT = QIWI.getCurrencyByCharCode("KZT")
