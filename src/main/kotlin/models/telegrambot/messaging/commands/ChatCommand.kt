@@ -9,9 +9,8 @@ class ChatCommand : Command() {
 
     // бойлерплейт, ага
     fun reply(replyBuilder: ChatCommandReply.() -> Unit) {
-        executables[Events.BEFORE_REPLY]!!()
-        reply = ChatCommandReply(context).apply(replyBuilder)
-        executables[Events.AFTER_REPLY]!!()
+        executables[Events.ANSWER] =
+            fun() = ChatCommandReply(context).apply(replyBuilder)
     }
 
     companion object : CommandCompanion<ChatCommand> {

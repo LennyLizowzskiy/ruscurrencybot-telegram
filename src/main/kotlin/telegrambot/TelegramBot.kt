@@ -4,6 +4,9 @@ import ResourceStore
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.encodeToDynamic
 import models.telegrambot.messaging.commands.ChatCommand
+import models.telegrambot.messaging.commands.ChatCommandReply
+import models.telegrambot.messaging.commands.Command
+import models.telegrambot.messaging.commands.InlineAnswer
 import models.telegrambot.messaging.commands.InlineRequest
 import models.telegrambot.messaging.response.InlineQuery
 import kotlin.js.RegExp
@@ -27,6 +30,9 @@ fun listenChatCommands() {
     TelegramBot.onText(RegExp("(?<=\\/)\\w+")) { message, matched ->
         val command = ChatCommand.storage[matched[0]] ?: return@onText
 
+        command.executables[Command.Events.BEFORE_REPLY]!!()
+        command.reply = command.executables[Command.Events.ANSWER]!!() as ChatCommandReply
+
         command.context.message = message
 
         val options = json(
@@ -38,6 +44,7 @@ fun listenChatCommands() {
         if (command.reply.options.isTelegramReply) options["reply_to_message_id"] = message.message_id
 
         TelegramBot.sendMessage(message.chat.id, command.reply.text, options)
+        command.executables[Command.Events.AFTER_REPLY]!!()
     }
 }
 
@@ -55,19 +62,24 @@ fun listenInlineQueries() {
                 answer = entry.value
             }
         }
-        answer!!.let { request ->
-            request.context.query = query.query.unsafeCast<InlineQuery>()
-            request.context.matched = matched!!
+        if (answer == null) answer = InlineRequest.storage.getValue("default")
 
-            val resultArray: ArrayList<dynamic> = arrayListOf()
-            val jsoner = JsonS {
-                classDiscriminator = "_type"
-                encodeDefaults = true
-                explicitNulls = false
-            }
-            request.answer.results.forEach { resultArray.add(jsoner.encodeToDynamic(it)) }
+        answer!!.executables[Command.Events.BEFORE_REPLY]!!()
 
-            TelegramBot.asDynamic().answerInlineQuery(query.id, resultArray.toTypedArray())
+        val finalAnswer = answer!!.executables[Command.Events.ANSWER]!!() as InlineAnswer // потому что смарт-кастить оно не хочет
+
+        finalAnswer.context.query = query.query.unsafeCast<InlineQuery>()
+        finalAnswer.context.matched = matched
+
+        val resultArray: ArrayList<dynamic> = arrayListOf()
+        val jsoner = JsonS {
+            classDiscriminator = "_type"
+            encodeDefaults = true
+            explicitNulls = false
         }
+        finalAnswer.results.forEach { resultArray.add(jsoner.encodeToDynamic(it)) }
+
+        TelegramBot.asDynamic().answerInlineQuery(query.id, resultArray.toTypedArray())
+        answer!!.executables[Command.Events.AFTER_REPLY]!!()
     }
 }

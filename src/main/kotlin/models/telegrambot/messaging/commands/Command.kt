@@ -6,17 +6,11 @@ sealed class Command {
     abstract val context: Context
 
     // Да, оно пиздец как бойлерплейтно реализовано, но придумать как этого нормально избежать не смог
-    val executables = mutableMapOf(
+    val executables = mutableMapOf<Events, () -> Any>(
         Events.BEFORE_REPLY to {},
+        Events.ANSWER to {},
         Events.AFTER_REPLY to {}
     )
-
-    // Попытка придумать как избежать бойлерплейта. В зачаточном состоянии.
-//    fun respond() {
-//        executables[Events.BEFORE_REPLY]!!()
-//
-//        executables[Events.AFTER_REPLY]!!()
-//    }
 
     fun executeBeforeReply(block: () -> Unit) {
         executables[Events.BEFORE_REPLY] = block
@@ -27,6 +21,6 @@ sealed class Command {
     }
 
     enum class Events {
-        BEFORE_REPLY, AFTER_REPLY
+        ANSWER, BEFORE_REPLY, AFTER_REPLY
     }
 }

@@ -6,9 +6,9 @@ class InlineContext : Context() {
     @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
     var query: InlineQuery?
         get() = get("query") as? InlineQuery
-        set(value) = put("query", value)
+        set(value) = put("query", value).unsafeCast<Unit>()
 
     var schemaFillers: Array<Array<Pair<String, dynamic>>> = emptyArray()
 
-    lateinit var matched: MatchResult
+    var matched: MatchResult? = null
 }
