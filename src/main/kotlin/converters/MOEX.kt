@@ -15,7 +15,7 @@ import kotlin.js.Date
 import kotlin.js.json
 
 object MOEX : ExchangeCurrencyConverter() {
-    override val name = "Московская биржжа"
+    override val name = "Московская биржа"
     override val shortName = "MOEX"
 
     override val baseUrl = "http://www.cbr.ru/scripts/XML_daily.asp"

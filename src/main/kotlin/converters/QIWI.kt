@@ -16,7 +16,7 @@ object QIWI : BankCurrencyConverter() {
     override val name = "QIWI Кошелёк"
     override val shortName = "QIWI"
 
-    override val baseUrl = "https://qiwi.com/payment/exchange"
+    override val baseUrl = "https://edge.qiwi.com/sinap/crossRates"
 
     override var updateInterval: Long = 3600000
 
@@ -36,7 +36,7 @@ object QIWI : BankCurrencyConverter() {
 
         // 156 - 643 (nominal / .rate) = CNY покупка
         // 643 - 156 = CNY продажа
-        needle("get", "https://edge.qiwi.com/sinap/crossRates").then { response: dynamic ->
+        needle("get", baseUrl).then { response: dynamic ->
             val result = js("JSON.parse(response.body).result").unsafeCast<Array<CrossRate>>()
 
             // АЛЁРТ

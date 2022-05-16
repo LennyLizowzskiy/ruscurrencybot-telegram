@@ -1,6 +1,6 @@
 package models.converters
 
-typealias CurrencyFull = Pair<Currency, CurrencyRate>
+typealias ExchangeCurrency = Pair<Currency, CurrencyRate>
 
 /*
  * Для заполнения рекомендуется использовать данную схему:

@@ -8,9 +8,9 @@ import kotlinx.coroutines.await
 import kotlinx.coroutines.promise
 import models.converters.Currency
 import models.converters.CurrencyRate
-import models.converters.ExchangeCurrencyConverter
+import models.converters.ShopCurrencyConverter
 
-object AliExpress : ExchangeCurrencyConverter() {
+object AliExpress : ShopCurrencyConverter() {
     override val name = "AliExpress"
     override val shortName = "AliExpress"
     override val baseUrl = "https://alicoup.ru/currency/"

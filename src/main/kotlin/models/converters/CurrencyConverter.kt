@@ -17,7 +17,7 @@ sealed class CurrencyConverter {
 
     val baseCurrency = Currency.Ruble
 
-    val latestRequestedData: MutableSet<CurrencyFull> = mutableSetOf()
+    val latestRequestedData: MutableSet<ExchangeCurrency> = mutableSetOf()
 
     @OptIn(DelicateCoroutinesApi::class)
     open suspend fun initiate(): Promise<*> = GlobalScope.promise {}
@@ -52,7 +52,7 @@ sealed class CurrencyConverter {
     private var noUpdateHours: Set<String> = emptySet() // пример: "00", "09", "14"
     var lastUpdateTime: Double = 0.0
     fun disableUpdatesAt(vararg hours: String) {
-        noUpdateHours = noUpdateHours.plus(hours.asIterable())
+        noUpdateHours = noUpdateHours.plus(hours)
     }
 
     @OptIn(DelicateCoroutinesApi::class)
@@ -89,7 +89,18 @@ sealed class CurrencyConverter {
 /**
  * Биржевой конвертер валют
  */
-abstract class ExchangeCurrencyConverter: CurrencyConverter() {
+abstract class ExchangeCurrencyConverter : CurrencyConverter() {
+    override fun convertRublesTo(to: Currency, amount: Float, transactionType: ConvertType?)
+        = with(getCurrencyByCharCode(to.charCode)) { amount / this.second.sellingFor * this.first.nominal }
+
+    override fun convertToRubles(from: Currency, amount: Float, transactionType: ConvertType?)
+        = with(getCurrencyByCharCode(from.charCode)) { amount / this.first.nominal * this.second.sellingFor }
+}
+
+/**
+ * Конвертер курсов валют в магазинах
+ */
+abstract class ShopCurrencyConverter : CurrencyConverter() {
     override fun convertRublesTo(to: Currency, amount: Float, transactionType: ConvertType?)
         = with(getCurrencyByCharCode(to.charCode)) { amount / this.second.sellingFor * this.first.nominal }
 
@@ -100,7 +111,7 @@ abstract class ExchangeCurrencyConverter: CurrencyConverter() {
 /**
  * Банковский конвертер валют (со спредом продажа-покупка)
  */
-abstract class BankCurrencyConverter: CurrencyConverter() {
+abstract class BankCurrencyConverter : CurrencyConverter() {
     override fun convertRublesTo(to: Currency, amount: Float, transactionType: ConvertType?): Float
         = with(getCurrencyByCharCode(to.charCode)) {
             return when(transactionType) {
