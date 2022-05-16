@@ -33,4 +33,25 @@ fun registerMessageSchemas(): Unit = with(MessageSchema) {
         ⚠️ Часы работы валютного сектора MOEX: с 10:00 по 18:59
         """.trimIndent()
     )
+
+    register(
+        "oneCurrencyConverter_usd",
+        """
+        <i>Конвертация %sourceAmount %sourceCurrency в RUB по данным:</i>
+        
+        <b>по %moexName:</b>  %moexSourceRate
+        <b>по %qiwiName (продажа/покупка):</b>  %qiwiSourceSellRate/%qiwiSourceBuyRate
+        <b>по %aliName:</b>  %aliSourceRate
+        """.trimIndent()
+    )
+
+    register(
+        "oneCurrencyConverter_other",
+        """
+        <i>Примерная конвертация %sourceAmount %sourceCurrency в RUB:</i>
+        
+        <b>по %moexName:</b>  %moexSourceRate
+        <b>по %qiwiName (продажа/покупка):</b>  %qiwiSourceSellRate/%qiwiSourceBuyRate
+        """.trimIndent()
+    )
 }
