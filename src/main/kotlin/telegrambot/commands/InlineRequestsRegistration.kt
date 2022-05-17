@@ -79,7 +79,8 @@ fun registerInlineRequests(): Unit = with(InlineRequest) {
                 return@executeBeforeReply
             }
 
-            val (_, qiwiRates) = QIWI.getCurrencyByCharCode(currency.charCode)
+            val (qiwiCur, qiwiRates) = QIWI.getCurrencyByCharCode(currency.charCode)
+            val (moexCur, moexRates) = MOEX.getCurrencyByCharCode(currency.charCode)
 
             context["sourceAmount"] = amount
             context["sourceCurrency"] = currency.charCode
@@ -88,16 +89,16 @@ fun registerInlineRequests(): Unit = with(InlineRequest) {
                 "sourceAmount" to amount, "sourceCurrency" to currency.charCode,
 
                 "moexName" to MOEX.name,
-                "moexSourceRate" to (MOEX.getCurrencyByCharCode(currency.charCode).second.sellingFor * amount).cutToTwoDecimalPlaces(),
+                "moexSourceRate" to (moexRates.sellingFor / moexCur.nominal * amount).cutToTwoDecimalPlaces(),
 
                 "qiwiName" to QIWI.name,
-                "qiwiSourceSellRate" to (qiwiRates.sellingFor * amount).cutToTwoDecimalPlaces(),
-                "qiwiSourceBuyRate" to (qiwiRates.buyingFor * amount).cutToTwoDecimalPlaces()
+                "qiwiSourceSellRate" to (qiwiRates.sellingFor / qiwiCur.nominal * amount).cutToTwoDecimalPlaces(),
+                "qiwiSourceBuyRate" to (qiwiRates.buyingFor / qiwiCur.nominal * amount).cutToTwoDecimalPlaces()
             )
 
             if (currency.charCode == "USD") {
                 firstSchemaList.add("aliName" to AliExpress.name)
-                firstSchemaList.add("aliSourceRate" to (AliExpress.getCurrencyByCharCode("USD").second.sellingFor * amount).cutToTwoDecimalPlaces())
+                firstSchemaList.add("aliSourceRate" to (AliExpress.getCurrencyByCharCode("USD").second.sellingFor / qiwiCur.nominal * amount).cutToTwoDecimalPlaces())
             }
 
             context.schemaFillers = arrayOf(

@@ -16,7 +16,7 @@ enum class Currency(
     Dollar("USD", "Доллар США", 1, '$'),
     Euro("EUR", "Евро", 1, '€'),
     Tenge("KZT", "Казахстанский тенге", 100, '₸'),
-    Yuan("CNY", "Китайский юань", 1, '¥');
+    Yuan("CNY", "Китайский юань", 10, '¥');
 
     companion object {
         fun findByCharCode(charCode: String) = Currency.values().find { it.charCode == charCode }
