@@ -8,6 +8,8 @@ import models.telegrambot.messaging.commands.ChatCommandReply
 import models.telegrambot.messaging.commands.Command
 import models.telegrambot.messaging.commands.InlineAnswer
 import models.telegrambot.messaging.commands.InlineRequest
+import models.telegrambot.messaging.context.ChatContext
+import models.telegrambot.messaging.context.InlineContext
 import models.telegrambot.messaging.response.InlineQuery
 import kotlin.js.RegExp
 import kotlin.js.json
@@ -45,6 +47,8 @@ fun listenChatCommands() {
 
         TelegramBot.sendMessage(message.chat.id, command.reply.text, options)
         command.executables[Command.Events.AFTER_REPLY]!!()
+
+        command.context = ChatContext()
     }
 }
 
@@ -81,5 +85,7 @@ fun listenInlineQueries() {
 
         TelegramBot.asDynamic().answerInlineQuery(query.id, resultArray.toTypedArray())
         answer!!.executables[Command.Events.AFTER_REPLY]!!()
+
+        answer!!.context = InlineContext()
     }
 }

@@ -5,7 +5,7 @@ import models.telegrambot.messaging.context.ChatContext
 class ChatCommand : Command() {
     lateinit var reply: ChatCommandReply
 
-    override val context = ChatContext()
+    override var context = ChatContext()
 
     // бойлерплейт, ага
     fun reply(replyBuilder: ChatCommandReply.() -> Unit) {

@@ -5,7 +5,7 @@ import models.telegrambot.messaging.context.InlineContext
 class InlineRequest : Command() {
     lateinit var regexes: Array<Regex>
 
-    override val context = InlineContext()
+    override var context = InlineContext()
 
     // бойлерплейт, ага
     fun answer(answerBuilder: InlineAnswer.() -> Unit) {
