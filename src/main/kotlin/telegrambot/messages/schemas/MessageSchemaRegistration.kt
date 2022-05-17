@@ -15,13 +15,13 @@ fun registerMessageSchemas(): Unit = with(MessageSchema) {
         🇰🇿 100 KZT за %kztM RUB
         🇺🇸 1 USD за %usdM RUB
         🇪🇺 1 EUR за %eurM RUB
-        🇨🇳 1 CNY за %cnyM RUB
+        🇨🇳 10 CNY за %cnyM RUB
           
         <b>%converterBankName (покупка/продажа) от %bankLastUpdateTimestamp:</b> %closedWarning
         🇰🇿 100 KZT за %kztBBuy/%kztBSell RUB
         🇺🇸 1 USD за %usdBBuy/%usdBSell RUB
         🇪🇺 1 EUR за %eurBBuy/%eurBSell RUB
-        🇨🇳 1 CNY за %cnyBBuy/%cnyBSell RUB
+        🇨🇳 10 CNY за %cnyBBuy/%cnyBSell RUB
         """.trimIndent()
     )
 
